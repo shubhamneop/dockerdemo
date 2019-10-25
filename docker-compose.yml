@@ -1,0 +1,42 @@
+version: "2"
+services:
+
+  app:
+    build:
+      context: .
+      dockerfile: container-build/web/Dockerfile
+    environment:
+    - MYSQL_DATABASE=dockerdemo
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=ac3r
+    - MYSQL_HOST=db
+    ports:
+    - "8080:80"
+    volumes:
+    - .:/var/www
+    depends_on:
+    - db
+    - mongodb
+
+  db:
+    image: mysql:5.7
+    ports:
+    - "6603:3306"
+    environment:
+    - MYSQL_ROOT_PASSWORD=ac3r
+    - MYSQL_USER=root
+    - MYSQL_PASSWORD=ac3r
+    - MYSQL_DATABASE=dockerdemo
+    volumes:
+    - "mysql_data:/var/lib/mysql"
+    - ./data/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+ 
+  mongodb:
+        container_name: mongodb
+        image: mongo
+        ports:
+            - 27018:27017
+        logging:
+            driver: none  
+volumes:
+  mysql_data: { driver: local }

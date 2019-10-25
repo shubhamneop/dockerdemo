@@ -1,0 +1,15 @@
+FROM php:7.1-apache
+
+RUN apt-get update \
+ && docker-php-ext-install  mysqli pdo_mysql \
+ && apt-get install pkg-config \
+ && echo "extension=mongodb.so" > $PHP_INI_DIR/conf.d/mongodb.ini\
+ && a2enmod rewrite \
+ && sed -i 's!/var/www/html!/var/www/public!g' /etc/apache2/sites-available/000-default.conf \
+ && mv /var/www/html /var/www/public \
+ && curl -sS https://getcomposer.org/installer \
+  | php -- --install-dir=/usr/local/bin --filename=composer \ 
+ && echo "AllowEncodedSlashes On" >> /etc/apache2/apache2.conf
+
+WORKDIR /var/www
+
