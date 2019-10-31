@@ -25,7 +25,9 @@ Route::get('users',function(){
 
 Route::resource('posts','PostController');
 
+Route::resource('address','AddressController');
 
-Route::get('address',function(){
-return App\Address::all();
+
+Route::get('addresss',function(){
+return App\Address::with('useraddress')->get();
 });

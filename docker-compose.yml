@@ -37,6 +37,6 @@ services:
         ports:
             - 27018:27017
         logging:
-            driver: none  
+            driver: local  
 volumes:
   mysql_data: { driver: local }

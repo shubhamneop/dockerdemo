@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Address;
 use Illuminate\Http\Request;
+use Auth;
 
 class AddressController extends Controller
 {
@@ -14,7 +15,8 @@ class AddressController extends Controller
      */
     public function index()
     {
-        //
+        $addresss = Address::all();
+        return view('address.index',compact('addresss'));
     }
 
     /**
@@ -24,7 +26,7 @@ class AddressController extends Controller
      */
     public function create()
     {
-        //
+        return view('address.create');
     }
 
     /**
@@ -34,8 +36,19 @@ class AddressController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {
-        //
+    {  
+        $this->validate($request,[
+          'address'=>'required',
+          'city'=>'required',
+          'state'=>'required',
+          'zipcode'=>'required|numeric',
+          'mobile'=>'required'    
+        ]);
+        $input = $request->all();
+        $input['user_id'] = Auth::user()->id;
+        Address::create($input);
+        
+        return redirect('address')->with('success','Address Added !');
     }
 
     /**
@@ -46,7 +59,7 @@ class AddressController extends Controller
      */
     public function show(Address $address)
     {
-        //
+       return view('address.show',compact('address'));
     }
 
     /**
@@ -57,7 +70,7 @@ class AddressController extends Controller
      */
     public function edit(Address $address)
     {
-        //
+       return view('address.edit',compact('address'));
     }
 
     /**
@@ -68,8 +81,21 @@ class AddressController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Address $address)
-    {
-        //
+    {   
+        $this->validate($request,[
+            'address'=>'required',
+            'city'=>'required',
+            'state'=>'required',
+            'zipcode'=>'required|numeric',
+            'mobile'=>'required'    
+          ]);
+          
+        $input = $request->all();
+        $input['user_id'] = Auth::user()->id;
+
+        $address->update($input);
+        return redirect('address')->with('success','Address Updated !');
+
     }
 
     /**
@@ -80,6 +106,8 @@ class AddressController extends Controller
      */
     public function destroy(Address $address)
     {
-        //
+       $address->delete();
+       return redirect('address')->with('success','Address Deleted !');
+
     }
 }
